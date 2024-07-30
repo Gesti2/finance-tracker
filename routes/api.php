@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\Transaction;
+// use App\Models\Transaction;
+// use App\Http\Controllers\Api\V1\TransactionController; // added the group below
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,19 +18,7 @@ Route::get('/user', function (Request $request) {
 
 
 
-// Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1', 'as' => 'api.v1.'], function () {
-//     Route::get('/transactions', function () {
-//         return Transaction::all();
-//     });
-// });
-
-
-Route::prefix('v1')->group(function () {
-    Route::get('/transactions', function () {
-        return Transaction::all();
-    });
+Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1', 'as' => 'api.v1.'], function () {
+    // Route::apiResource('/transactions', TransactionController::class);
+    Route::apiResource('transactions', 'TransactionController');
 });
-
-// Route::get('/transactions', function () {
-//     return Transaction::all();
-// });
