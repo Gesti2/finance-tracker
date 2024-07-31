@@ -20,5 +20,8 @@ Route::get('/user', function (Request $request) {
 
 Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1', 'as' => 'api.v1.'], function () {
     // Route::apiResource('/transactions', TransactionController::class);
-    Route::apiResource('transactions', 'TransactionController');
+    Route::apiResource('transactions', 'TransactionController')->only(['index', 'store', 'update']);
+
+    Route::get('/transactions/{id}', 'TransactionController@show');
+    Route::delete('/transactions/{id}', 'TransactionController@destroy');
 });
