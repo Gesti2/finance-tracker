@@ -27,9 +27,7 @@ abstract class BaseRepository implements BaseRepositoryContract
      * @throws Exception
      */
     public function __construct(Application $app)
-    // public function __construct(Model $model)
     {
-        // $this->model = $model;
         $this->app = $app;
         $this->makeModel();
     }
@@ -44,11 +42,9 @@ abstract class BaseRepository implements BaseRepositoryContract
      * @param array $colums
      * @return mixed //\Illuminate\Database\Eloquent\Collection
      */
-    // public function all($colums = array('*'))
-    public function all(): Collection
+    public function all($colums = array('*'))
     {
-        // return $this->model->get($colums);
-        return $this->model->all();
+        return $this->model->get($colums);
     }
 
     /**
@@ -82,6 +78,10 @@ abstract class BaseRepository implements BaseRepositoryContract
         return $this->model->destroy($id);
     }
 
+    /**
+     * @return Model|Builder
+     * @throws Exception
+     */
     public function makeModel()
     {
         $model = $this->app->make($this->model());
@@ -91,6 +91,11 @@ abstract class BaseRepository implements BaseRepositoryContract
         }
 
         return $this->model = $model;
+    }
+
+    public function find($id, $columns = array('*'))
+    {
+        return $this->model->find($id, $columns);
     }
 
     public function findOrFail($id, $columns = array('*'))

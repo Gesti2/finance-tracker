@@ -10,7 +10,7 @@ class TransactionResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @return array<string, mixed> // array of attributes that should be converted to json when resource is returned as a response
+     * @return array<string, mixed> 
      */
     public function toArray(Request $request): array
     {

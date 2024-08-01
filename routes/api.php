@@ -24,4 +24,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1', 'a
 
     Route::get('/transactions/{id}', 'TransactionController@show');
     Route::delete('/transactions/{id}', 'TransactionController@destroy');
+
+
+    Route::apiResource('categories', 'CategoryController')->only(['index', 'store', 'update']);
 });

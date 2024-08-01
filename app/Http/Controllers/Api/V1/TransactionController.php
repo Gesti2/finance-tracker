@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Requests\Api\V1\StoreTransactionRequest;
-use App\Http\Requests\Api\V1\UpdateTransactionRequest;
+use App\Http\Requests\Api\V1\TransactionStoreRequest;
+use App\Http\Requests\Api\V1\TransactionUpdateRequest;
 use App\Http\Resources\TransactionResource;
+use App\Http\Services\TransactionService;
 use App\Repositories\Contracts\TransactionRepositoryContract;
 
 // use App\Models\User;
@@ -13,7 +14,7 @@ use App\Repositories\Contracts\TransactionRepositoryContract;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+// use Illuminate\Support\Carbon;
 // use Illuminate\Support\Facades\Gate;
 // use Illuminate\Support\Arr;
 // use Illuminate\Support\Facades\Auth;
@@ -32,71 +33,65 @@ class TransactionController extends ApiController
     public function __construct(TransactionRepositoryContract $transactionRepository)
     {
         $this->transactionRepository = $transactionRepository;
-        //
+        //     $this->middleware('auth:sanctum')->only([
+        //         'store',
+        //         'update',
+        //         'destroy'
+        //     ]);
     }
 
     public function index(Request $request)
     {
-        // $transactions = Transaction::with('user', 'category')->latest()->simplePaginate(8);
-        // $transactions = Transaction::query()->paginate(perPage: 10);
         $transactions = $this->transactionRepository->paginate(perPage: 10);
-        // dd($transactions);
 
         return TransactionResource::collection($transactions);
     }
 
-    public function create()
-    {
-        //
-    }
-
     /**
      * Summary of store
-     * @param \App\Http\Requests\Api\V1\StoreTransactionRequest $request
+     * @param \App\Http\Requests\Api\V1\TransactionStoreRequest $request
      * @return TransactionResource
      */
-    public function store(StoreTransactionRequest $request, TransactionRepositoryContract $transactionRepository)
+    public function store(TransactionStoreRequest $request)
     {
-        $validatedData = $request->validated();
+        $response = TransactionService::store($request->validated());
 
-        $validatedData['transaction_date'] = $validatedData['transaction_date'] ?? Carbon::today()->toDateString();
+        // return new TransactionResource($response->getModel());
 
-        // $transaction = Transaction::create($validatedData); // create() returns a model instance
-        $transaction = $transactionRepository->create($validatedData);
 
-        return new TransactionResource($transaction);
-        // if ($transaction->success()) {
-        //     // return new TransactionResource($transaction->getModel());
-        //     return TransactionResource::make($transaction);
-        // } else {
-        //     return response()->json(['message' => $transaction->getMessage()], 400);
-        // }
+        if ($response->success()) {
+            // return new TransactionResource($transaction->getModel());
+            return new TransactionResource($response->getModel());
+        } else {
+            return response()->json(['message' => $response->getMessage()], 400);
+        }
     }
 
     // public function show(Transaction $transaction)
     public function show($id)
     {
-        // return TransactionResource::make($transaction);
-        // return new TransactionResource($transaction);
-
         $transaction = $this->transactionRepository->findOrFail($id);
 
+        // return TransactionResource::make($transaction);
         return new TransactionResource($transaction);
     }
 
-    public function edit(Transaction $transaction)
-    {
-        //
-    }
 
-    public function update(UpdateTransactionRequest $request, int $id)
+    public function update(TransactionUpdateRequest $request, int $id)
     {
-        // $transaction->update($request->validated());
+        // $transaction->update($request->validated()); // old way, just with resources
         // return TransactionResource::make($transaction);
 
-        $transaction = $this->transactionRepository->update($id, $request->validated());
+        // $transaction = $this->transactionRepository->update($id, $request->validated()); // old way, added repositories
+        // return new TransactionResource($transaction);
 
-        return TransactionResource::make($transaction);
+        $response = TransactionService::update($id, $request->validated()); // new way, added services
+
+        if ($response->success()) {
+            return new TransactionResource($response->getModel());
+        } else {
+            return response()->json(['message' => $response->getMessage()], 400);
+        }
     }
 
     public function destroy(int $id)
