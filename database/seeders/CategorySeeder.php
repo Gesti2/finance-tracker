@@ -15,28 +15,21 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        Category::factory(3)->create();
+        $categories = [
+            ['name' => 'Groceries'],
+            ['name' => 'Utilities'],
+            ['name' => 'Entertainment'],
+            ['name' => 'Transport'],
+            ['name' => 'Healthcare'],
+            ['name' => 'Education'],
+            ['name' => 'Rent'],
+            ['name' => 'Savings'],
+            ['name' => 'Investments'],
+            ['name' => 'Other'],
+        ];
 
-
-        // $categories = [
-        //     ['name' => 'Groceries'],
-        //     ['name' => 'Utilities'],
-        //     ['name' => 'Entertainment'],
-        //     ['name' => 'Transport'],
-        //     ['name' => 'Healthcare'],
-        //     ['name' => 'Education'],
-        //     ['name' => 'Rent'],
-        //     ['name' => 'Savings'],
-        //     ['name' => 'Investments'],
-        //     ['name' => 'Other'],
-        // ];
-
-        // foreach ($categories as $category) {
-        //     Category::updateOrCreate(['name' => $category['name']], $category);
-        // }
-
-        // $categories = Category::all();
-
-
+        foreach ($categories as $category) {
+            Category::updateOrCreate(['name' => $category['name']], $category);
+        }
     }
 }
