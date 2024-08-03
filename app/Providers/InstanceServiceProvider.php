@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Http\Services\Auth\Authentication;
+use App\Http\Services\Auth\AuthenticationInterface;
 use App\Http\Services\TransactionService;
 use App\Repositories\Eloquent\TransactionRepository;
 use App\Http\Services\CategoryService;
@@ -16,7 +18,7 @@ class InstanceServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // )
+        $this->app->bind(AuthenticationInterface::class, Authentication::class);
     }
 
     /**

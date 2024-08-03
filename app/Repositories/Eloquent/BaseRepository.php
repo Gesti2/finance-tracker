@@ -98,6 +98,11 @@ abstract class BaseRepository implements BaseRepositoryContract
         return $this->model->find($id, $columns);
     }
 
+    public function findBy($attribute, $value, $columns = array('*'))
+    {
+        return $this->model->where($attribute, '=', $value)->first($columns);
+    }
+
     public function findOrFail($id, $columns = array('*'))
     {
         return $this->model->findOrFail($id, $columns);
@@ -105,6 +110,6 @@ abstract class BaseRepository implements BaseRepositoryContract
 
     public function findOrFailBy($attribute, $value, $columns = array('*'))
     {
-        return $this->model->where($attribute, $value)->firstOrFail($columns);
+        return $this->model->where($attribute, '=', $value)->firstOrFail($columns);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Contracts;
 
+use IntlChar;
+
 interface BaseRepositoryContract
 {
 
@@ -33,6 +35,15 @@ interface BaseRepositoryContract
      * @throws RepositoryException
      */
     public function makeModel();
+
+    /**
+     * @param int
+     * @param array $colums
+     * @return mixed
+     */
+    public function find($id, $colums = array('*'));
+
+    public function findBy($attribute, $value, $colums = array('*'));
 
 
     public function findOrFail($id, $colums = array('*'));

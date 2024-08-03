@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryStoreRequest extends ApiFormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,7 +22,8 @@ class CategoryStoreRequest extends ApiFormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:100', // maybe add unique
+            'email' => 'required|string|email|exists:users,email',
+            'password' => 'required',
         ];
     }
 }

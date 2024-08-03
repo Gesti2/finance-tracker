@@ -12,4 +12,12 @@ class TransactionPolicy
     {
         return $transaction->user->is($user);
     }
+
+
+    // public function edit(User $user, Transaction $transaction): Response
+    // {
+    //     return $user->id === $transaction->user_id
+    //         ? Response::allow()
+    //         : Response::deny('You do not own this transaction.');
+    // }
 }
