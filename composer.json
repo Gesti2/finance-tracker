@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "finance-tracker/example": "^1.0",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9"
@@ -19,6 +20,12 @@
         "nunomaduro/collision": "^8.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0"
+    },
+    "repositories": {
+        "0": {
+            "type": "path",
+            "url": "./modules/Example*"
+        }
     },
     "autoload": {
         "psr-4": {
