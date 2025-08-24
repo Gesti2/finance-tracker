@@ -912,7 +912,7 @@
                 <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
                     <div class="flex max-w-7xl justify-end lg:col-start-1">
                         <img class="h-12 w-auto text-white lg:h-16 lg:text-[#FF2D20]"
-                            src="{{ Vite::asset('resources/images/coins-solid.svg') }}" alt="hre">
+                            src="{{ asset('resources/images/coins-solid.svg') }}" alt="hre">
 
                     </div>
                     @if (Route::has('login'))
