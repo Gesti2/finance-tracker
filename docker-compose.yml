@@ -2,11 +2,11 @@ services:
   app:
     build:
       args:
-        user: john
-        uid: 1000
+        user: ${USER:-laravel}
+        uid: ${UID:-1000}
       context: .
       dockerfile: Dockerfile
-    image: finance-tracker
+    image: finance-tracker:dev
     container_name: ft-backend
     restart: unless-stopped
     tty: true
@@ -19,6 +19,8 @@ services:
       # - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - ft-network
+    depends_on:
+      - db
 
   db:
     image: mysql:8.4
@@ -26,15 +28,17 @@ services:
     restart: unless-stopped
     tty: true
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_DATABASE: ${DB_DATABASE:-finance-tracker}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_USER: ${DB_USERNAME:-laravel}
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
+    ports:
+      - ${DB_PORT:-3306}:3306
     volumes:
-      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
-      # - ./docker-compose/mysql:/var/lib/mysql # seems to not work
+      - ./docker/mysql:/docker-entrypoint-initdb.d
+      # - ./docker/mysql:/var/lib/mysql # seems to not work
     networks:
       - ft-network
 
@@ -42,15 +46,16 @@ services:
     image: nginx:1.28-alpine
     container_name: ft-nginx
     restart: unless-stopped
-    tty: true
     ports:
-      - 8080:80
-      - 8443:443
+      - ${APP_PORT:-8080}:80
+      - ${APP_SSL_PORT:-8443}:443
     volumes:
       - ./:/var/www/backend
-      - ./docker-compose/nginx:/etc/nginx/conf.d
+      - ./docker/nginx:/etc/nginx/conf.d
     networks:
       - ft-network
+    depends_on:
+      - app
 
 networks:
   ft-network:

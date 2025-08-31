@@ -1,8 +1,6 @@
-FROM php:8.2-fpm
-
-# ARguments defined in docker-compose.yml
-ARG user
-ARG uid
+# Multi-stage build for optimized prod image
+# Stage 1: Build environment and Composer dependencies
+FROM php:8.2-fpm AS php-base
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -10,24 +8,38 @@ RUN apt-get update && apt-get install -y \
     curl \
     libpng-dev \
     libonig-dev \
+    libxml2-dev \
+    libzip-dev \
     zip \
-    unzip
+    unzip \
+    nginx \
+    supervisor
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd xml zip opcache
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
-
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Create system user to run Composer and Artisan Commands
+# Development stage
+FROM php-base AS development
+ARG user=laravel
+ARG uid=1000
+
+# Install dev tools
+RUN pecl install xdebug \
+  && docker-php-ext-enable xdebug
+
+# Create system user
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
     chown -R $user:$user /home/$user
 
-# Set working directory
-WORKDIR /var/www
+# PHP configuration for dev
+COPY docker/php/php-dev.ini /usr/local/etc/php/conf.d/99-custom.ini
 
+WORKDIR /var/www
 USER $user

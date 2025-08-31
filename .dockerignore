@@ -1,0 +1,28 @@
+# Ignore Git stuff
+.git
+.gitignore
+
+# Ignore local environment configs
+.env
+.env.*
+
+# Ignore vendor if you want Composer to install fresh
+/vendor
+/node_modules
+
+# Ignore node stuff
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# Ignore OS/editor junk
+.DS_Store
+*.swp
+*.swo
+.vscode
+
+# Logs & Cache
+/storage/logs
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
